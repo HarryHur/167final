@@ -67,24 +67,11 @@ void display(void){
     glm:ortho(-,4,4, -4,4, 0.5f, 12.0f)
     0.5 and 12.0 near and far
 
-    I think we're not using useProgram correctly. We tried setting fragColor = red but we don't see red.
-    Maybe it's viewport?
-
-    What to put in depth.frag and do we need it for depth shader
-
-    Also, I (Fajar) don't understand maps and buffers and how it connects.
-    
-    Also, I (Harry) have no idea how to derive a DepthShader structure from Shader.*/
-
-    //Last one, we need to ask about how to push to github.
+    */
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glViewport(0, 0, width, height);
-
-    //depthShader.read_source( "shaders/projective.vert", "shaders/depth.frag"); 
-
-    glUseProgram(depthShader.program);
-    scene.draw();
+    scene.draw(&depthShader);
     
     
     glutSwapBuffers();

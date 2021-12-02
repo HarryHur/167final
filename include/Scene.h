@@ -19,6 +19,7 @@
 #include "Geometry.h"
 #include "Material.h"
 #include "Model.h"
+#include "DepthShader.h"
 
 #ifndef __SCENE_H__
 #define __SCENE_H__
@@ -52,6 +53,7 @@ public:
     
     void init( void );
     void draw( void );
+    void draw( DepthShader* depthShader );
     
     // destructor
     ~Scene(){

@@ -30,11 +30,12 @@ your shader.
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include "Material.h"
 
 #ifndef __DEPTHSHADER_H__
 #define __DEPTHSHADER_H__
 
-class DepthShader: public Shader {
+struct DepthShader: Shader {
     // modelview and projection
     glm::mat4 view = glm::mat4(1.0f); GLuint view_loc;
     glm::mat4 modelview = glm::mat4(1.0f); GLuint modelview_loc;
