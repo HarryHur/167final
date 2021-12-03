@@ -31,6 +31,7 @@ your shader.
 #include <fstream>
 #include <cstring>
 #include "Material.h"
+#include "Camera.h"
 
 #ifndef __DEPTHSHADER_H__
 #define __DEPTHSHADER_H__
@@ -40,14 +41,13 @@ struct DepthShader: Shader {
     glm::mat4 view = glm::mat4(1.0f); GLuint view_loc;
     glm::mat4 modelview = glm::mat4(1.0f); GLuint modelview_loc;
     glm::mat4 projection = glm::mat4(1.0f); GLuint projection_loc;
-    
+     
     // Responsible for finding variables we have and save address
     // Only modelview and projection needed
     void initUniforms(){
         view_loc  = glGetUniformLocation( program, "view" );
         modelview_loc  = glGetUniformLocation( program, "modelview" );
         projection_loc = glGetUniformLocation( program, "projection" );
-        
     }
     void setUniforms(){
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, &view[0][0]);
