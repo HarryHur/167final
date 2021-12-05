@@ -16,7 +16,13 @@ struct SurfaceShader : Shader {
     // modelview and projection
     glm::mat4 view = glm::mat4(1.0f); GLuint view_loc;
     glm::mat4 modelview = glm::mat4(1.0f); GLuint modelview_loc;
+    glm::mat4 model = glm::mat4(1.0f); GLuint model_loc;
     glm::mat4 projection = glm::mat4(1.0f); GLuint projection_loc;
+
+    // lightspace
+    glm::mat4 viewLS = glm::mat4(1.0f); GLuint viewLS_loc;
+    glm::mat4 projectionLS = glm::mat4(1.0f); GLuint projectionLS_loc;
+
     // material parameters
     Material* material;
     GLuint ambient_loc;
@@ -40,7 +46,10 @@ struct SurfaceShader : Shader {
     void initUniforms(){
         view_loc  = glGetUniformLocation( program, "view" );
         modelview_loc  = glGetUniformLocation( program, "modelview" );
+        model_loc  = glGetUniformLocation( program, "model" );
         projection_loc = glGetUniformLocation( program, "projection" );
+        viewLS_loc  = glGetUniformLocation( program, "viewLS" );
+        projectionLS_loc = glGetUniformLocation( program, "projectionLS" );
         ambient_loc    = glGetUniformLocation( program, "ambient" );
         diffuse_loc    = glGetUniformLocation( program, "diffuse" );
         specular_loc   = glGetUniformLocation( program, "specular" );
@@ -55,7 +64,10 @@ struct SurfaceShader : Shader {
     void setUniforms(){
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, &view[0][0]);
         glUniformMatrix4fv(modelview_loc, 1, GL_FALSE, &modelview[0][0]);
+        glUniformMatrix4fv(model_loc, 1, GL_FALSE, &model[0][0]);
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, &projection[0][0]);
+        glUniformMatrix4fv(viewLS_loc, 1, GL_FALSE, &viewLS[0][0]);
+        glUniformMatrix4fv(projectionLS_loc, 1, GL_FALSE, &projectionLS[0][0]);
         glUniform4fv( ambient_loc  , 1, &(material -> ambient[0])  );
         glUniform4fv( diffuse_loc  , 1, &(material -> diffuse[0])  );
         glUniform4fv( specular_loc , 1, &(material -> specular[0]) );
