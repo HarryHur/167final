@@ -135,9 +135,9 @@ void Scene::init(void){
     camera -> reset();
     
     // Initialize shader
-    shader = new SurfaceShader;
-    shader -> read_source( "shaders/projective.vert", "shaders/lighting.frag" );
-    shader -> compile();
-    glUseProgram(shader -> program);
-    shader -> initUniforms();
+    // shader = new SurfaceShader;
+    // shader -> read_source( "shaders/projective.vert", "shaders/lighting.frag" );
+    // shader -> compile();
+    // glUseProgram(shader -> program);
+    // shader -> initUniforms();
 }

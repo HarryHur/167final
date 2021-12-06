@@ -20,6 +20,10 @@ uniform int nlights;
 uniform vec4 lightpositions[ maximal_allowed_lights ];
 uniform vec4 lightcolors[ maximal_allowed_lights ];
 
+// shadowMap
+uniform sampler2D shadowMap; 
+
+
 // Output the frag color
 out vec4 fragColor;
 
@@ -44,6 +48,10 @@ void main (void){
         }
         fragColor = emision + temp;
         // HW3: You will compute the lighting here.
-        
     }
+    
+    vec3 positionLS = projectionLS.xyz / projectionLS.w; // Clip-space to NDC
+	positionLS = positionLS * 0.5 + 0.5;	// shifts from [-1, 1] to [0, 1]
+	float sampledDepth = texture(shadowMap, positionLS.xy).r; 
+	fragColor = vec4(vec3(sampledDepth), 1.f);
 }

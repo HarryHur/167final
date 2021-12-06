@@ -16,7 +16,7 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "DepthShader.h"
-
+#include "Light.h"
 
 static const int width = 800;
 static const int height = 600;
@@ -24,13 +24,9 @@ static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static Scene scene;
 static DepthShader depthShader;
-// static SurfaceShader surfaceShader;
+static SurfaceShader surfaceShader;
 
 #include "hw3AutoScreenshots.h"
-
-// static unsigned int depthMapFBO;
-// static const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-// static unsigned int depthMap;
 
 void printHelp(){
     std::cout << R"(
@@ -53,29 +49,10 @@ void initialize(void){
     glClearColor(background[0], background[1], background[2], background[3]); // background color
     glViewport(0,0,width,height);
 
-    // FBO stuff
-    // glGenFramebuffers(1, &depthMapFBO);  
-
-    // glGenTextures(1, &depthMap);
-    // glBindTexture(GL_TEXTURE_2D, depthMap);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
-    //              SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
-    
-    // glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    // glDrawBuffer(GL_NONE);
-    // glReadBuffer(GL_NONE);
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);  
-
-
     // Surface shader
-    // surfaceShader.read_source( "shaders/projective.vert", "shaders/lighting.frag" );
-    // surfaceShader.compile();
-    // surfaceShader.initUniforms();
+    surfaceShader.read_source( "shaders/projective.vert", "shaders/lighting.frag" );
+    surfaceShader.compile();
+    surfaceShader.initUniforms();
 
     // Initialize depthShader stuff
     depthShader.read_source( "shaders/lightspace.vert", "shaders/depth.frag");
@@ -97,22 +74,29 @@ void display(void){
     glm:ortho(-,4,4, -4,4, 0.5f, 12.0f)
     0.5 and 12.0 near and far
 
-    */
+    How to do step 3 lol
+    How to pass in uniform 2d sampler
 
+    */
+    
+    GLuint depthMap = scene.light["sun"] -> depthMap;
+    GLuint depthMapFBO = scene.light["sun"] -> depthMapFBO;
+    GLuint SHADOW_HEIGHT = scene.light["sun"] -> SHADOW_HEIGHT;
+    GLuint SHADOW_WIDTH = scene.light["sun"] -> SHADOW_WIDTH;
     // 1st pass
-    // glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, SHADOW_WIDTH,  SHADOW_HEIGHT);
     scene.draw(&depthShader);
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2nd color pass
 
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    // glViewport(0,0, width, height);    
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, depthMap);
-    // scene.draw(&surfaceShader);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glViewport(0,0, width, height);    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,  GL_TEXTURE0);
+    scene.draw(&surfaceShader);
     
     glutSwapBuffers();
     glFlush();
