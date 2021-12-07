@@ -14,6 +14,7 @@ uniform vec4 diffuse;
 uniform vec4 specular;
 uniform vec4 emision;
 uniform float shininess;
+uniform mat4 projection;
 
 // Light source parameters
 const int maximal_allowed_lights = 10;
@@ -29,14 +30,23 @@ uniform sampler2D shadowMap;
 // Output the frag color
 out vec4 fragColor;
 
-// float computeShadow() {
-//     // Use if else to prevent occlusion that's clipped
-//     vec3 positionLS = positionLS.xyz / positionLS.w; // Clip-space to NDC
-// 	positionLS = positionLS * 0.5 + 0.5;	// shifts from [-1, 1] to [0, 1]
-// 	float sampledDepth = texture(shadowMap, positionLS.xy).r; 
-//     return sampledDepth;
-// 	//fragColor = vec4(vec3(sampledDepth), 1.f);
-// }
+float computeShadow() {
+    vec3 ndc = positionLS.xyz / positionLS.w; // Clip-space to NDC
+    ndc = ndc * 0.5 + 0.5; // shifts from [-1, 1] to [0, 1]
+    float sampledDepth = texture(shadowMap, ndc.xy).r; 
+
+    vec3 lightDir = normalize(positionLS.xyz - position.xyz );
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);  
+    
+    // Over sampling fix
+    if(ndc.z > 1.0)
+        return 0.0;
+
+    if(ndc.z - bias > sampledDepth){
+        return 1.0;
+    }
+    return 0.0;
+}
 
 void main (void){
     if (!enablelighting){
@@ -52,15 +62,13 @@ void main (void){
         vec3 view_direction = normalize(-vec3(position_eye));
 
         for (int i = 0 ; i < nlights; i++){
-             vec4 L = view * lightpositions[i]; //light position
-             vec3 l = normalize(position_eye.w * vec3(L) - vec3(position_eye) * L.w);
-             vec3 h = normalize(view_direction + l);
-           // Multiply everything but ambient with 1 - computeShadow
-          temp += lightcolors[i] * (ambient + diffuse * max(dot(N,l),0)+ specular * pow(max(dot(N,h),0),shininess));
+            vec4 L = view * lightpositions[i]; //light position
+            vec3 l = normalize(position_eye.w * vec3(L) - vec3(position_eye) * L.w);
+            vec3 h = normalize(view_direction + l);
+            // Multiply everything but ambient with 1 - computeShadow
+            float shadowFactor = 1 - computeShadow();
+            temp += lightcolors[i] * (ambient + diffuse * max(dot(N,l),0) * shadowFactor + specular * pow(max(dot(N,h),0),shininess));
         }
         fragColor = temp;
-        //HW3: You will compute the lighting here.
     }
-    
-    
 }

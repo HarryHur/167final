@@ -73,9 +73,6 @@ void Scene::init(void){
     light["sun"] -> color = 1.0f*vec4(1.0f,1.0f,1.0f,1.0f);
     light["sun"] -> computeMatrices();
     
-    light["bulb"] = new Light;
-    light["bulb"] -> position = vec4(0.0f,2.0f,0.0f,0.0f);
-    light["bulb"] -> color = 1.5f * vec4(1.0f,0.2f,0.1f,1.0f);
     
     // Build the scene graph
     node["table"] = new Node;
@@ -125,8 +122,7 @@ void Scene::init(void){
     node["world"] -> childtransforms.push_back( translate(vec3(-1.8f,0.0f,0.0f)) * rotate( 90.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ));
     node["world"] -> childnodes.push_back( node["ground"] );
     node["world"] -> childtransforms.push_back( mat4(1.0f) );
-    node["world"] -> models.push_back( model["bulb"] );
-    node["world"] -> modeltransforms.push_back( translate(vec3(0.0f,2.0f,0.0f))*scale(vec3(0.1f)) );
+    
     
     // Put a camera
     camera = new Camera;

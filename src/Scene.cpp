@@ -86,7 +86,17 @@ void Scene::draw(SurfaceShader *surfaceShader) {
     surfaceShader -> projection = camera -> proj;
     surfaceShader -> viewLS = light["sun"] -> view;
     surfaceShader -> projectionLS = light["sun"] -> proj;
-    
+
+    surfaceShader -> nlights = light.size();
+    surfaceShader -> lightpositions.resize( surfaceShader -> nlights );
+    surfaceShader -> lightcolors.resize( surfaceShader -> nlights );
+    int count = 0;
+    for ( std::pair<std::string,Light*> entry : light ){
+        surfaceShader -> lightpositions[ count ] = (entry.second) -> position;
+        surfaceShader -> lightcolors[ count ] = (entry.second) -> color;
+        count++;
+    }
+     
     // Define stacks for depth-first search (DFS)
     std::stack < Node* > dfs_stack;
     std::stack < mat4 >  matrix_stack; // HW3: You will update this matrix_stack during the depth-first search while loop.
