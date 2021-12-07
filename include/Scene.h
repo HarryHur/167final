@@ -36,6 +36,7 @@ class Scene {
 public:
     Camera* camera;
     SurfaceShader* shader;
+    DepthShader* depthShader;
     // The following are containers of objects serving as the object palettes.
     // The containers store pointers so that they can also store derived class objects.
     std::map< std::string, Geometry* > geometry;

@@ -23,8 +23,6 @@ static const int height = 600;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static Scene scene;
-static DepthShader depthShader;
-static SurfaceShader surfaceShader;
 
 #include "hw3AutoScreenshots.h"
 
@@ -48,15 +46,6 @@ void initialize(void){
     printHelp();
     glClearColor(background[0], background[1], background[2], background[3]); // background color
     glViewport(0,0,width,height);
-
-    // Surface shader
-    surfaceShader.read_source( "shaders/projective.vert", "shaders/lighting.frag" );
-    surfaceShader.compile();
-    surfaceShader.initUniforms();
-
-    // Initialize depthShader stuff
-    depthShader.read_source( "shaders/lightspace.vert", "shaders/depth.frag");
-    depthShader.compile();
     
     // Initialize scene
     scene.init();
@@ -66,43 +55,25 @@ void initialize(void){
 }
 
 void display(void){
-    /*
-    To space light correctly preventin clipping
-    1.75f * vec4(3,2,1,1)
-
-    light proj matrix
-    glm:ortho(-,4,4, -4,4, 0.5f, 12.0f)
-    0.5 and 12.0 near and far
-
-    How to do step 3 lol
-    How to pass in uniform 2d sampler
-
-    */
     
-    GLuint depthMap = scene.light["sun"] -> depthMap;
-    GLuint depthMapFBO = scene.light["sun"] -> depthMapFBO;
-    GLuint SHADOW_HEIGHT = scene.light["sun"] -> SHADOW_HEIGHT;
-    GLuint SHADOW_WIDTH = scene.light["sun"] -> SHADOW_WIDTH;
+    Light *light = scene.light["sun"]; 
+
     // 1st pass
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, light->depthMapFBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glViewport(0, 0, SHADOW_WIDTH,  SHADOW_HEIGHT);
-    scene.draw(&depthShader);
+    glViewport(0, 0, light->SHADOW_WIDTH, light->SHADOW_HEIGHT);
+    scene.draw(scene.depthShader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2nd color pass
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glViewport(0,0, width, height);    
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,  GL_TEXTURE0);
-    scene.draw(&surfaceShader);
-    
+    glBindTexture(GL_TEXTURE_2D, light->depthMap);
+    scene.draw(scene.shader);
+
     glutSwapBuffers();
     glFlush();
-
-
-    //scene.draw();
 }
 
 void saveScreenShot(const char* filename = "test.png"){

@@ -12,12 +12,8 @@ struct Light {
     glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     float near_plane = 0.5f, far_plane = 12.0f;
-    glm::mat4 proj = glm::ortho(-3.0f, 3.0f, -3.0f, 3.0f, near_plane, far_plane);  
-    glm::vec3 newposition = glm::vec3(position.x, position.y, position.z) * 1.75f;
-    glm::mat4 view = glm::lookAt( newposition, 
-                                  glm::vec3( 0.0f, 0.0f,  0.0f), 
-                                  glm::vec3( 0.0f, 1.0f,  0.0f));  
-    glm::mat4 lightSpaceMatrix = proj * view;
+    glm::mat4 proj;
+    glm::mat4 view;
 
     const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
     GLuint depthMap;
@@ -41,6 +37,11 @@ struct Light {
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+    }
+
+    void computeMatrices() {
+        view = glm::lookAt(glm::vec3(position), glm::vec3(0), glm::vec3(0, 1, 0));
+        proj = glm::ortho(-3.0f, 3.0f, -3.0f, 3.0f, near_plane, far_plane);
     }
 };
 

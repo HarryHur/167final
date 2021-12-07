@@ -15,7 +15,6 @@ SurfaceShader is a shader that has the uniform
 struct SurfaceShader : Shader {
     // modelview and projection
     glm::mat4 view = glm::mat4(1.0f); GLuint view_loc;
-    glm::mat4 modelview = glm::mat4(1.0f); GLuint modelview_loc;
     glm::mat4 model = glm::mat4(1.0f); GLuint model_loc;
     glm::mat4 projection = glm::mat4(1.0f); GLuint projection_loc;
 
@@ -45,7 +44,6 @@ struct SurfaceShader : Shader {
     // Only modelview and projection needed
     void initUniforms(){
         view_loc  = glGetUniformLocation( program, "view" );
-        modelview_loc  = glGetUniformLocation( program, "modelview" );
         model_loc  = glGetUniformLocation( program, "model" );
         projection_loc = glGetUniformLocation( program, "projection" );
         viewLS_loc  = glGetUniformLocation( program, "viewLS" );
@@ -63,7 +61,6 @@ struct SurfaceShader : Shader {
     }
     void setUniforms(){
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, &view[0][0]);
-        glUniformMatrix4fv(modelview_loc, 1, GL_FALSE, &modelview[0][0]);
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, &model[0][0]);
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, &projection[0][0]);
         glUniformMatrix4fv(viewLS_loc, 1, GL_FALSE, &viewLS[0][0]);
