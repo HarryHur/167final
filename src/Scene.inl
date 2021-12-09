@@ -82,7 +82,7 @@ void Scene::init(void){
     
     // Create a light palette
     light["sun"] = new Light;
-    light["sun"] -> position = 1.75f * vec4(3.0f,2.0f,1.0f,0.0f);
+    light["sun"] -> position = 1.75f * vec4(0.0f,2.0f,-3.0f,0.0f);
     light["sun"] -> color = 1.0f*vec4(1.0f,1.0f,1.0f,1.0f);
     light["sun"] -> computeMatrices();
     

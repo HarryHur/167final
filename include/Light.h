@@ -49,7 +49,7 @@ struct Light {
 
     void computeMatrices() {
         view = glm::lookAt(glm::vec3(position), glm::vec3(0), glm::vec3(0, 1, 0));
-        proj = glm::ortho(-3.0f, 3.0f, -3.0f, 3.0f, near_plane, far_plane);
+        proj = glm::ortho(-6.0f, 6.0f, -6.0f, 6.0f, near_plane, far_plane);
     }
 };
 

@@ -37,6 +37,7 @@ float computeShadow() {
 
     vec3 lightDir = normalize(positionLS.xyz - position.xyz );
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);  
+    bias = 0.05;
     
     // Over sampling fix
     if(ndc.z > 1.0)
