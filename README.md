@@ -36,7 +36,8 @@ In the first case, weird black lines will show up in our scene. This is due to l
 
 In the second case, pixels outside of the light's projection matrix / frustum (one which we created) are shadowed weirdly. To fix this, we just set all shadows outside of the matrix to 0 using an openGL trick.
 
-## Demonstration
+## Demo
+Go to the demo folder in the repo to see pictures and videos.
 
 ## Read more
 
